@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rijan2357</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #ffffff;
+      --fg: #1f2328;
+      --muted: #656d76;
+      --border: #d0d7de;
+      --accent: #0969da;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0d1117;
+        --fg: #e6edf3;
+        --muted: #848d97;
+        --border: #30363d;
+        --accent: #58a6ff;
+      }
+    }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      max-width: 680px;
+      margin: 4rem auto;
+      padding: 0 1.25rem;
+      line-height: 1.6;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      margin: 0 0 0.25rem;
+      font-size: 1.75rem;
+    }
+    p.subtitle {
+      margin: 0;
+      color: var(--muted);
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .desc {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>rijan2357</h1>
+    <p class="subtitle">Projects &amp; Documentation</p>
+  </header>
+
+  <main>
+    <ul id="repo-list">
+      <li>Loading repositories...</li>
+    </ul>
+  </main>
+
+  <script>
+    async function loadPagesRepos() {
+      const list = document.getElementById("repo-list");
+      try {
+        const res = await fetch("https://github.com");
+        if (!res.ok) throw new Error("Failed to fetch repositories");
+        const repos = await res.json();
+
+        const pagesRepos = repos.filter(
+          (repo) => repo.has_pages && repo.name.toLowerCase() !== "rijan2357.github.io"
+        );
+
+        if (pagesRepos.length === 0) {
+          list.innerHTML = '<li>No project sites published yet.</li>';
+          return;
+        }
+
+        list.innerHTML = pagesRepos
+          .map(
+            (repo) => `
+              <li>
+                <a href="./${encodeURIComponent(repo.name)}/">${repo.name}</a>
+                <span class="desc">${repo.description || "GitHub Pages project"}</span>
+              </li>
+            `
+          )
+          .join("");
+      } catch (err) {
+        list.innerHTML = '<li>View projects on <a href="https://github.com">GitHub</a>.</li>';
+      }
+    }
+
+    loadPagesRepos();
+  </script>
+</body>
+</html>
